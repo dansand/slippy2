@@ -25,13 +25,13 @@ CLASSIFIERS = ["Development Status :: 3 - Alpha",
                "Topic :: Scientific/Engineering"]
 
 # Description should be a one-liner:
-description = "shablona: a template for small scientific Python projects"
+description = "slippy2: based a template for small scientific Python projects"
 # Long description will go up on the pypi page
 long_description = """
 
-Shablona
+Slippy2
 ========
-Shablona is a template project for small scientific Python projects.
+Slippy2 is based on a template project for small scientific Python projects.
 
 It contains software implementations of an analysis of some simple data, but
 more importantly, it contains infrastructure for testing, documentation,
@@ -70,7 +70,7 @@ MAJOR = _version_major
 MINOR = _version_minor
 MICRO = _version_micro
 VERSION = __version__
-PACKAGES = ['shablona',
-            'shablona.tests']
-PACKAGE_DATA = {'shablona': [pjoin('data', '*')]}
+PACKAGES = ['slippy2',
+            'slippy2.tests']
+PACKAGE_DATA = {'slippy': [pjoin('data', '*')]}
 REQUIRES = ["numpy"]
