@@ -4,8 +4,6 @@ shablona.egg-info/dependency_links.txt
 shablona.egg-info/pbr.json
 shablona.egg-info/top_level.txt
 slippy2/__init__.py
-slippy2/slippy2.py
 slippy2/spmesh.py
 slippy2/version.py
 slippy2/tests/__init__.py
-slippy2/tests/test_slippy2.py
