@@ -296,15 +296,12 @@ def deform_1d(f, mesh,axis = 'x',norm = 'None', constraints = "None"):
         p_initial = p_undeformed.copy()
         print ('edges', len(edges))
         p_solution = static_solution( p_initial, edges, f, constraints )
-        origxcoords = np.linspace(mesh.minCoord[thisaxis ], mesh.maxCoord[thisaxis ], mesh.elementRes[thisaxis ] + 1)
+        origxcoords = np.around(np.linspace(mesh.minCoord[thisaxis ], mesh.maxCoord[thisaxis ], mesh.elementRes[thisaxis ] + 1), 5)
         dictionary = dict(itertools.izip(origxcoords, p_solution[:,0]))
         #print dictionary
         with mesh.deform_mesh():
             for index, coord in enumerate(mesh.data):
-                if index < mesh.data_nodegId.shape[0]:
-                    loctoglob = mesh.data_nodegId[index][0]
-                    key =  usekeys[loctoglob]
-                    mesh.data[index][thisaxis] = dictionary[key]
+                mesh.data[index][thisaxis] = dictionary[np.around(coord,5)[thisaxis]]
         #Print some stats
         print("Min, Max element width: ")
         print("%.5f" % min(compute_edge_lengths(p_solution, edges )))
