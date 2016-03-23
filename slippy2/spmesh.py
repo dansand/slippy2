@@ -1,5 +1,5 @@
 import numpy as np
-import matplotlib.pyplot as plt
+#import matplotlib.pyplot as plt
 import collections
 import itertools
 
@@ -246,7 +246,16 @@ def mesh_element_keys(mesh):
         b = np.column_stack((b, ykeys))
     return a.flatten(), b.flatten()
 
-def deform_1d(f, mesh,axis = 'x',norm = 'None', constraints = "None"):
+def find_closest(A, target):
+    #A must be sorted
+    idx = A.searchsorted(target)
+    idx = np.clip(idx, 1, len(A)-1)
+    left = A[idx-1]
+    right = A[idx]
+    idx -= target - left < right - target
+    return idx
+
+def deform_1d(f, mesh,axis = 'x',norm = 'None', constraints = []):
     """This function deforms the mesh along the given axis,
     by solving an anlogous spring system. The deformation is described by:
     f: function, or vector, giving the equilibrium spring lengths.
@@ -292,7 +301,7 @@ def deform_1d(f, mesh,axis = 'x',norm = 'None', constraints = "None"):
         mesh_nodes= np.arange(0, p_undeformed.shape[ 0] , 1)
 
         edges = [(int(i), int(i+1)) for i in mesh_nodes[:-1]]
-        constraints = [ ( mesh_nodes[0], p_undeformed[ 0] ), ( mesh_nodes[-1], p_undeformed[-1] ) ]
+        constraints = [ ( mesh_nodes[0], p_undeformed[ 0] ), ( mesh_nodes[-1], p_undeformed[-1] ) ] + constraints#Add egde constraints
         p_initial = p_undeformed.copy()
         print ('edges', len(edges))
         p_solution = static_solution( p_initial, edges, f, constraints )
