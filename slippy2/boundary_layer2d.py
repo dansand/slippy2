@@ -14,7 +14,7 @@ import slippy2 as sp
 import math
 class LithosphereTemps(object):
 
-    def __init__(self, mesh, temperatureField,lengthScale, SZ, MOR=None,tint = 0.8, vel= 100e3, diffs = 1e-6):
+    def __init__(self, mesh, temperatureField,lengthScale, SZ, MOR=None,tint = 0.8, tsurf = 0.0, vel= 100e3, diffs = 1e-6):
         self.mesh = mesh
         self.dim = mesh.dim
         self.maxCoord = mesh.maxCoord
@@ -28,6 +28,7 @@ class LithosphereTemps(object):
         self.vel = vel
         self.diffs = diffs
         self.tint = tint
+        self.tsurf = tsurf
 
     def agefunc(self, x):
         """
@@ -106,7 +107,7 @@ class LithosphereTemps(object):
         """
         #1000 in line below to convert back to km
         secs = sp.unit_conversions.myts(age)
-        temp = self.tint*math.erf((depth)/(2*math.sqrt(secs*self.diffs)))
+        temp = (self.tint - self.tsurf)*math.erf((depth)/(2*math.sqrt(secs*self.diffs))) + self.tsurf
         return temp
 
     def lithdepthfunc(self, age):
