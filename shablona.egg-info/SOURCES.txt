@@ -5,6 +5,7 @@ shablona.egg-info/pbr.json
 shablona.egg-info/top_level.txt
 slippy2/__init__.py
 slippy2/boundary_layer2d.py
+slippy2/material_graph.py
 slippy2/spmesh.py
 slippy2/unit_conversions.py
 slippy2/uwmodel.py

@@ -45,7 +45,7 @@ class LithosphereTemps(object):
             TypeError: not implemented
             ValueError: not implemented
         """
-        #Normalise the domain:
+        #Translate the domain so it begins at x=0:
         if self.minCoord[0] < 0:
             xt = x + abs(self.minCoord[0])
             SZt = self.SZ + abs(self.minCoord[0])
