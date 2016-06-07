@@ -96,10 +96,12 @@ class MatGraph(DiGraph):
 
     def build_condition_list(self, materialVariable):
         self.condition_list = [] #empty the condition list
-        dm = 0.1
+        dm = 0.5
         for node in self.nodes():
             for otherNode in self[node].keys():
-                checkFrom = (materialVariable > (node-dm)) and (materialVariable < (node+dm))
+                #if node < otherNode:
+                checkFrom = ((materialVariable > (node-dm)) and (materialVariable < (node+dm)))
+                #print type(checkFrom)
                 condIt = 0
                 for cond in self[node][otherNode].keys():
                     op = self[node][otherNode][cond]['operator']
@@ -115,5 +117,6 @@ class MatGraph(DiGraph):
                             totCond = operator.and_(totCond, condExp)
                     condIt += 1
                 combCond = operator.and_(totCond, checkFrom)
+                #combCond = totCond
                 self.condition_list.append(((combCond), otherNode))
         self.condition_list.append((True ,          materialVariable)) #if no conditions are true, return current matId
