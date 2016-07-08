@@ -11,6 +11,7 @@ module_name, package_name, ClassName, function_name, method_name, ExceptionName,
 """
 
 import slippy2 as sp
+from slippy2 import unit_conversions
 import math
 class LithosphereTemps(object):
 
@@ -106,7 +107,7 @@ class LithosphereTemps(object):
             ValueError: not implemented
         """
         #1000 in line below to convert back to km
-        secs = sp.unit_conversions.myts(age)
+        secs = unit_conversions.myts(age)
         temp = (self.tint - self.tsurf)*math.erf((depth)/(2*math.sqrt(secs*self.diffs))) + self.tsurf
         return temp
 
@@ -122,5 +123,5 @@ class LithosphereTemps(object):
             TypeError: not implemented
             ValueError: not implemented
         """
-        depth_metres = 2.32*math.sqrt(sp.unit_conversions.myts(age)*self.diffs)
+        depth_metres = 2.32*math.sqrt(unit_conversions.myts(age)*self.diffs)
         return depth_metres
