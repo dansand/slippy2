@@ -30,7 +30,7 @@ class MatGraph(DiGraph):
             operators must be provided in function form through the operator package, eg. operator.gt(1., 2.)
         value: float
             the value will be compared to the providided function, given the provided operator
-        value: string
+        combineby: string
             'and' or 'or', defaults to 'and'. If multiple rules are provided for a single edge in the graph (representing the material transition)
             then they be applied in the sense of any ('or'), or all ('and')
         """
