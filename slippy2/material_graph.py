@@ -1,5 +1,6 @@
 
 from networkx import DiGraph
+import networkx as nx
 import numpy as np
 from easydict import EasyDict as edict
 import operator
@@ -44,7 +45,7 @@ class MatGraph(DiGraph):
             self.add_node(nodes[0])
             self.add_node(nodes[1])
             self.add_edges_from([nodes])
-        #create a random name for dictionary (we do this so we can store multiple conditions on an edge.)
+        #create a random name for dictionary (we need to have a different key for each condition on the graph edge)
         dname = uuid.uuid4()
         self[nodes[0]][nodes[1]][dname] = {}
         self[nodes[0]][nodes[1]][dname]['function'] = function
@@ -96,26 +97,31 @@ class MatGraph(DiGraph):
 
     def build_condition_list(self, materialVariable):
         self.condition_list = [] #empty the condition list
-        dm = 0.5
-        for node in self.nodes():
-            for otherNode in self[node].keys():
+        dm = 1e-6
+        for node in self.nodes(): #Loop through nodes of graph
+            for otherNode in self[node].keys(): #loop through all egdes from a given node
                 #if node < otherNode:
-                checkFrom = ((materialVariable > (node-dm)) and (materialVariable < (node+dm)))
-                #print type(checkFrom)
+                #this returns true for all particles with materialIndex == node (direct comparison isn't supported)
+                #checkFrom = ((materialVariable > (node-dm)) and (materialVariable < (node+dm)))  #this one wasn't working
+                checkFrom = operator.and_((materialVariable > (node - dm) ),
+                           (materialVariable < (node + dm) ))
                 condIt = 0
-                for cond in self[node][otherNode].keys():
-                    op = self[node][otherNode][cond]['operator']
-                    fun = self[node][otherNode][cond]['function']
-                    val = self[node][otherNode][cond]['value']
-                    condExp = op(fun, val)
+                for cond in self[node][otherNode].keys(): #loop through all conditions attached to the graph edge
+                    op = self[node][otherNode][cond]['operator']    #
+                    fun = self[node][otherNode][cond]['function']   #{extract function, operator, value}
+                    val = self[node][otherNode][cond]['value']      #
+                    condExp = op(fun, val)  #Now provide the function & value to the operator, return result as a variable
                     if condIt == 0:
-                        totCond = condExp
-                    else:
+                        totCond = condExp #if this is the first condition, assign to totCond
+                    else: #if this is the NOT first condition, combine conditin with previous totCond (using AND or OR)
                         if self[node][otherNode].values()[0]['combineby'] == 'or':
                             totCond = operator.or_(totCond, condExp)
                         else:
                             totCond = operator.and_(totCond, condExp)
                     condIt += 1
+
+                #When we pass this on to fn.branching.conditional, we only want to apply it to paticles where
+                # matIndex == node, which occurs where checkFrom == True, 1
                 combCond = operator.and_(totCond, checkFrom)
                 #combCond = totCond
                 self.condition_list.append(((combCond), otherNode))
