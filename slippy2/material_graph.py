@@ -24,17 +24,21 @@ class MatGraph(DiGraph):
         Parameters
         ----------
         nodes : Tuple
-            Representing the material Indexes of materials which a transition is likely to occur, e.g crust to eclogite.
+            (a,b) represents the possibility of a transition from material a to material b
         function: underworld.function._function.Function
             (could also be a constant)
         nOperator: operator
-            operators must be provided in function form through the operator package, eg. operator.gt(1., 2.)
+            operators must be provided in function form through the operator package, eg. operator.gt(1., 2.). Only less than and greater than operators are supported.
         value: float
             the value will be compared to the providided function, given the provided operator
         combineby: string
             'and' or 'or', defaults to 'and'. If multiple rules are provided for a single edge in the graph (representing the material transition)
             then they be applied in the sense of any ('or'), or all ('and')
         """
+        #only greater than or less than comparisons are supported for conditons
+        if not operator.or_(FnOperator.__name__ == ('lt'), FnOperator.__name__ == ('gt')):
+            raise AssertionError("FnOperator must be either operator.lt or operator.gt", FnOperator)
+
         firstEdge = True
         try:
             self[nodes[0]][nodes[1]] #see if the node exists
@@ -56,6 +60,7 @@ class MatGraph(DiGraph):
             self[nodes[0]][nodes[1]][dname]['combineby'] =  'or'
         if not firstEdge:
             assert self[nodes[0]][nodes[1]][dname]['combineby'] == self[nodes[0]][nodes[1]][prevdname]['combineby'], "if the graph has multiple conditions on an edge, provided 'combineby' string must be identical to avoid ambiguity."
+
     def walk_update(self, swarm, materialVariable):
         """
         A function that allows you to update an underworld material swarm, given the directed graph (and rules) describing those transitions
@@ -102,7 +107,6 @@ class MatGraph(DiGraph):
             for otherNode in self[node].keys(): #loop through all egdes from a given node
                 #if node < otherNode:
                 #this returns true for all particles with materialIndex == node (direct comparison isn't supported)
-                #checkFrom = ((materialVariable > (node-dm)) and (materialVariable < (node+dm)))  #this one wasn't working
                 checkFrom = operator.and_((materialVariable > (node - dm) ),
                            (materialVariable < (node + dm) ))
                 condIt = 0
