@@ -25,8 +25,7 @@ class component_phases():
             list of density changes in kg/m3
         Returns
         -------
-        mesh : dp
-        Dictionary storing the phase-transition vales
+        dp : Dictionary storing the phase-transition vales
 
         """
         if not isinstance(depths,list):
